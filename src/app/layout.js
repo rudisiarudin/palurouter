@@ -1,0 +1,65 @@
+import { Inter } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
+import "material-symbols/outlined.css";
+import "./globals.css";
+import { ThemeProvider } from "@/shared/components/ThemeProvider";
+import "@/lib/network/initOutboundProxy"; // Auto-initialize outbound proxy env
+import "@/shared/services/bootstrap"; // Auto-run initializeApp (watchdog, auto-resume tunnel)
+import { initConsoleLogCapture } from "@/lib/consoleLogBuffer";
+import { RuntimeI18nProvider } from "@/i18n/RuntimeI18nProvider";
+
+import Script from "next/script";
+
+// Hook console immediately at module load time (server-side only, runs once)
+initConsoleLogCapture();
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
+
+export const metadata = {
+  title: "PALU Router - AI Infrastructure & Gateway",
+  description: "AI Gateway & Router Management System",
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
+
+export const viewport = {
+  themeColor: "#03080a",
+};
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Apply persisted theme before first paint so a reload does not flash the
+            default (light) theme before the client store hydrates. Mirrors the
+            zustand-persist "theme" key and the `dark` class applyTheme() sets. */}
+        <Script
+          id="theme-initializer"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var s=localStorage.getItem('theme');var t=s?(JSON.parse(s).state||{}).theme:'dark';t=t||'dark';var m=window.matchMedia('(prefers-color-scheme: dark)').matches;if(t==='dark'||(t==='system'&&m)||!s){document.documentElement.classList.add('dark')}}catch(e){}})();`,
+          }}
+        />
+        <Script
+          id="fonts-loaded-handler"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `var d=document,r=d.documentElement,f=function(){r.classList.add('fonts-loaded')};if(d.fonts&&d.fonts.load){d.fonts.load('24px "Material Symbols Outlined"').then(f).catch(f);setTimeout(f,3000)}else{f()}`,
+          }}
+        />
+      </head>
+      <body className={`${inter.variable} font-sans antialiased`} suppressHydrationWarning>
+        <ThemeProvider>
+          <RuntimeI18nProvider>
+            {children}
+          </RuntimeI18nProvider>
+        </ThemeProvider>
+        <GoogleAnalytics gaId={"G-LC959F603F"} />
+      </body>
+    </html>
+  );
+}
