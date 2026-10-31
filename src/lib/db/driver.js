@@ -5,6 +5,18 @@ import { stripNullBytes } from "./helpers/nullBytes.js";
 if (!global._dbAdapter) global._dbAdapter = { instance: null, initPromise: null, logged: false };
 const state = global._dbAdapter;
 
+async function tryPgSql() {
+  const connStr = process.env.DATABASE_URL || process.env.SUPABASE_DB_URL;
+  if (!connStr) return null;
+  try {
+    const { createPgAdapter } = await import("./adapters/pgAdapter.js");
+    return createPgAdapter(connStr);
+  } catch (e) {
+    console.warn(`[DB] PostgreSQL/Supabase adapter unavailable: ${e.message}`);
+    return null;
+  }
+}
+
 async function tryBunSqlite() {
   // Bun runtime only — built-in, no install needed
   if (!process.versions.bun) return null;
@@ -83,10 +95,12 @@ function withNullByteSafeParams(adapter) {
 
 async function initAdapter() {
   ensureDirs();
-  // Order per runtime:
-  //   Bun:  bun:sqlite → sql.js
-  //   Node: better-sqlite3 → node:sqlite (≥22.5) → sql.js
-  let adapter = await tryBunSqlite();
+
+  // Check for PostgreSQL / Supabase connection first
+  let adapter = await tryPgSql();
+
+  // Fallback to SQLite drivers
+  if (!adapter) adapter = await tryBunSqlite();
   if (!adapter) adapter = await tryBetterSqlite();
   if (!adapter) adapter = await tryNodeSqlite();
   if (!adapter) adapter = await trySqlJs();
@@ -95,12 +109,15 @@ async function initAdapter() {
   adapter = withNullByteSafeParams(adapter);
 
   if (!state.logged) {
-    console.log(`[DB] Driver: ${adapter.driver} | file: ${DATA_FILE}`);
+    console.log(`[DB] Driver: ${adapter.driver} | ${adapter.driver === "postgres" ? "Cloud Supabase / PostgreSQL" : `file: ${DATA_FILE}`}`);
     state.logged = true;
   }
 
-  const { runMigrationOnce } = await import("./migrate.js");
-  await runMigrationOnce(adapter);
+  // SQLite migration (PostgreSQL schema is handled via supabase_schema.sql or dedicated migration)
+  if (adapter.driver !== "postgres") {
+    const { runMigrationOnce } = await import("./migrate.js");
+    await runMigrationOnce(adapter);
+  }
   return adapter;
 }
 
