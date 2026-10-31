@@ -103,7 +103,7 @@ export default function Sidebar({ onClose }) {
         } else if (data?.displayName) {
           setCurrentUser({
             name: data.displayName,
-            role: "admin",
+            role: "client",
           });
         }
       })
@@ -141,7 +141,8 @@ export default function Sidebar({ onClose }) {
     return pathname.startsWith(href);
   };
 
-  const isClient = currentUser?.role === "client";
+  const isAdmin = currentUser?.role === "admin";
+  const isClient = !isAdmin;
 
   const handleUpdate = () => {
     setShowUpdateModal(false);

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSettings, validateApiKey } from "@/lib/localDb";
 import { getConsistentMachineId } from "@/shared/utils/machineId";
-import { verifyDashboardAuthToken } from "@/lib/auth/dashboardSession";
+import { verifyDashboardAuthToken, getDashboardAuthSession } from "@/lib/auth/dashboardSession";
 import { hasTrustedPeerHeaders } from "@/lib/auth/trustedPeer";
 
 const CLI_TOKEN_HEADER = "x-9r-cli-token";
@@ -231,9 +231,32 @@ export async function proxy(request) {
     return NextResponse.json({ error: "API key required for remote API access" }, { status: 401 });
   }
 
+const ADMIN_ONLY_API_PREFIXES = [
+  "/api/settings",
+  "/api/providers",
+  "/api/provider-nodes",
+  "/api/combos",
+  "/api/pricing",
+  "/api/custom-models",
+  "/api/proxy-pools",
+  "/api/media-providers",
+  "/api/admin",
+  "/api/users",
+];
+
   // Deny-by-default for /api/* — public allow-list bypasses, everything else requires auth.
   if (pathname.startsWith("/api/")) {
     if (isPublicApi(pathname)) return NextResponse.next();
+
+    // Enforce admin-only API restriction against client tokens
+    const token = request.cookies.get("auth_token")?.value;
+    if (token) {
+      const session = await getDashboardAuthSession(token);
+      if (session?.role === "client" && ADMIN_ONLY_API_PREFIXES.some((p) => pathname.startsWith(p))) {
+        return NextResponse.json({ error: "Forbidden: Admin access required" }, { status: 403 });
+      }
+    }
+
     if (await hasValidCliToken(request) || await isAuthenticated(request))
       return NextResponse.next();
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -271,6 +294,23 @@ export async function proxy(request) {
     const token = request.cookies.get("auth_token")?.value;
     if (token) {
       if (await verifyDashboardAuthToken(token)) {
+        // Enforce RBAC for Client role: restrict to allowed client routes
+        const session = await getDashboardAuthSession(token);
+        if (session?.role === "client") {
+          const clientAllowed = [
+            "/dashboard/endpoint",
+            "/dashboard/chat",
+            "/dashboard/basic-chat",
+            "/dashboard/usage",
+          ];
+          if (pathname === "/dashboard" || pathname === "/dashboard/") {
+            return NextResponse.redirect(new URL("/dashboard/endpoint", request.url));
+          }
+          const isAllowed = clientAllowed.some((prefix) => pathname.startsWith(prefix));
+          if (!isAllowed) {
+            return NextResponse.redirect(new URL("/dashboard/endpoint", request.url));
+          }
+        }
         return NextResponse.next();
       } else {
         return NextResponse.redirect(new URL("/login", request.url));
