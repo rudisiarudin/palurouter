@@ -126,115 +126,123 @@ export default function ModelCatalog() {
     : MODELS.filter((m) => m.category === selectedCategory);
 
   return (
-    <section id="models" className="py-20 px-6 max-w-7xl mx-auto relative z-10">
-      <div className="text-center max-w-3xl mx-auto mb-12">
-        <div className="inline-flex items-center gap-2 rounded-full border border-teal-500/30 bg-teal-950/40 px-3 py-1 text-xs font-medium text-teal-300 mb-3">
-          Katalog Model & Transparansi Harga
-        </div>
-        <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-          Pilih Model Terbaik Sesuai Kebutuhan
-        </h2>
-        <p className="text-gray-400 mt-4 text-sm sm:text-base">
-          Gunakan model AI kelas dunia langsung lewat satu API Key. Saldo otomatis dipotong per pemakaian dalam Rupiah (Rp).
-        </p>
-      </div>
-
-      {/* Filter Category Tabs */}
-      <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
-        {CATEGORIES.map((cat) => (
-          <button
-            key={cat.id}
-            onClick={() => setSelectedCategory(cat.id)}
-            className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer ${
-              selectedCategory === cat.id
-                ? "bg-teal-500 text-gray-950 font-bold shadow-[0_0_15px_rgba(20,184,166,0.4)]"
-                : "bg-[#131f1e] text-gray-300 hover:text-white border border-teal-900/40 hover:border-teal-700/60"
-            }`}
-          >
-            {cat.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Grid of Models */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {filtered.map((model) => (
-          <div
-            key={model.id}
-            className={`relative flex flex-col justify-between p-5 rounded-xl border backdrop-blur-sm transition-all hover:scale-[1.02] ${
-              model.popular
-                ? "bg-gradient-to-b from-[#132826] to-[#0e1d1c] border-teal-500/40 shadow-[0_0_20px_rgba(20,184,166,0.15)]"
-                : "bg-[#0e1a19]/80 border-teal-900/30 hover:border-teal-700/50"
-            }`}
-          >
-            <div>
-              {/* Badge & Provider */}
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-teal-500/10 text-teal-300 border border-teal-500/20">
-                  {model.badge}
-                </span>
-                <span className="text-[11px] text-gray-400 font-medium">
-                  {model.provider}
-                </span>
-              </div>
-
-              {/* Title & Desc */}
-              <h3 className="text-lg font-bold text-white mb-1.5 flex items-center gap-1.5">
-                {model.name}
-              </h3>
-              <p className="text-xs text-gray-400 leading-relaxed mb-4">
-                {model.desc}
-              </p>
-            </div>
-
-            <div className="pt-4 border-t border-teal-900/30">
-              {/* Price row */}
-              <div className="space-y-1 mb-4 text-xs font-mono">
-                <div className="flex justify-between items-center text-gray-300">
-                  <span className="text-gray-400">Input:</span>
-                  <span className="text-teal-300 font-semibold">{model.priceInput}</span>
-                </div>
-                {model.priceOutput !== "N/A" && (
-                  <div className="flex justify-between items-center text-gray-300">
-                    <span className="text-gray-400">Output:</span>
-                    <span className="text-emerald-400 font-semibold">{model.priceOutput}</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Speed & Context */}
-              <div className="flex items-center justify-between text-[11px] text-gray-400 mb-4 bg-teal-950/40 px-2.5 py-1.5 rounded border border-teal-900/20">
-                <span>⚡ {model.speed}</span>
-                <span>📦 {model.context}</span>
-              </div>
-
-              {/* Action */}
-              <button
-                onClick={() => router.push("/login?tab=register")}
-                className="w-full py-2 rounded-lg text-xs font-bold bg-teal-500/20 hover:bg-teal-500 text-teal-300 hover:text-gray-950 border border-teal-500/40 transition-all cursor-pointer text-center"
-              >
-                Gunakan Model
-              </button>
-            </div>
+    <section id="models" className="py-24 px-6 border-b border-white/[0.08] bg-[#041410] relative z-10">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+          <div className="max-w-2xl">
+            <p className="text-xs font-semibold tracking-widest uppercase text-[#5eead4] mb-3">
+              MODEL DIRECTORY & TRANSPARENT PRICING
+            </p>
+            <h2 className="text-3xl sm:text-5xl font-semibold leading-[1.05] text-white">
+              Pilih model terbaik. <br />
+              <span className="text-[#9eb3ad] font-normal">Bayar akurat dalam Rupiah (Rp).</span>
+            </h2>
           </div>
-        ))}
-      </div>
+          <p className="text-[#9eb3ad] text-sm sm:text-base max-w-md leading-relaxed">
+            Satu unified endpoint untuk Claude 3.7 Sonnet, DeepSeek R1, GPT-4o, dan Gemini 2.0. Tanpa kartu kredit luar negeri dan tanpa biaya bulanan tersembunyi.
+          </p>
+        </div>
 
-      {/* Pricing Notice */}
-      <div id="pricing" className="mt-16 p-6 rounded-2xl bg-gradient-to-r from-teal-950/40 via-[#0e2120]/60 to-emerald-950/40 border border-teal-500/30 text-center max-w-4xl mx-auto">
-        <h4 className="text-lg font-bold text-white mb-2">
-          💳 Sistem Deposit Bebas & Fleksibel (Pay-As-You-Go)
-        </h4>
-        <p className="text-sm text-gray-300 max-w-2xl mx-auto leading-relaxed">
-          Tidak ada biaya langganan bulanan yang hangus sia-sia. Cukup top-up saldo mulai dari <strong className="text-teal-300">Rp 10.000 via QRIS</strong>, saldo tidak pernah kedaluwarsa dan hanya terpotong saat API Key Anda melakukan request.
-        </p>
-        <div className="mt-5 flex flex-wrap justify-center gap-4">
-          <button
-            onClick={() => router.push("/login?tab=register")}
-            className="px-6 py-2.5 rounded-lg bg-teal-500 hover:bg-teal-400 text-gray-950 font-bold text-sm shadow-[0_0_20px_rgba(20,184,166,0.4)] cursor-pointer"
-          >
-            Buka Akun & Top Up Sekarang
-          </button>
+        {/* Filter Category Pills */}
+        <div className="flex flex-wrap items-center gap-2 mb-10">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
+              className={`px-4 py-1.5 rounded-full text-xs font-mono font-medium transition-all cursor-pointer ${
+                selectedCategory === cat.id
+                  ? "bg-[#5eead4] text-[#041814] font-bold shadow-[0_0_20px_rgba(94,234,212,0.35)]"
+                  : "bg-white/5 text-[#9eb3ad] hover:text-white border border-white/[0.08] hover:bg-white/10"
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Grid of Models */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          {filtered.map((model) => (
+            <div
+              key={model.id}
+              className={`relative flex flex-col justify-between p-6 rounded-2xl border backdrop-blur-md transition-all duration-300 hover:scale-[1.02] ${
+                model.popular
+                  ? "bg-[#06221c]/80 border-[#5eead4]/40 shadow-[0_10px_35px_rgba(94,234,212,0.12)]"
+                  : "bg-[#051c17]/60 border-white/[0.08] hover:border-white/20"
+              }`}
+            >
+              <div>
+                {/* Badge & Provider */}
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-[10px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-[#5eead4]/10 text-[#5eead4] border border-[#5eead4]/20">
+                    {model.badge}
+                  </span>
+                  <span className="text-xs text-[#9eb3ad] font-mono">
+                    {model.provider}
+                  </span>
+                </div>
+
+                {/* Title & Desc */}
+                <h3 className="text-lg font-semibold text-white mb-2 flex items-center gap-1.5">
+                  {model.name}
+                </h3>
+                <p className="text-xs text-[#9eb3ad] leading-relaxed mb-6">
+                  {model.desc}
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-white/[0.06]">
+                {/* Price row */}
+                <div className="space-y-1.5 mb-4 text-xs font-mono">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[#9eb3ad]">Input:</span>
+                    <span className="text-[#5eead4] font-medium">{model.priceInput}</span>
+                  </div>
+                  {model.priceOutput !== "N/A" && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-[#9eb3ad]">Output:</span>
+                      <span className="text-emerald-400 font-medium">{model.priceOutput}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Speed & Context */}
+                <div className="flex items-center justify-between text-[11px] font-mono text-[#9eb3ad] mb-4 bg-black/20 px-3 py-1.5 rounded-lg border border-white/5">
+                  <span>⚡ {model.speed}</span>
+                  <span>📦 {model.context}</span>
+                </div>
+
+                {/* Action */}
+                <button
+                  onClick={() => router.push("/login?tab=register")}
+                  className="w-full py-2.5 rounded-full text-xs font-semibold bg-white/5 hover:bg-[#5eead4] text-[#d1e5e0] hover:text-[#041814] border border-white/10 hover:border-transparent transition-all cursor-pointer text-center"
+                >
+                  Gunakan Model
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Pricing Notice */}
+        <div id="pricing" className="mt-16 p-8 rounded-3xl bg-[#051c17]/80 border border-white/[0.08] text-center max-w-4xl mx-auto shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#5eead4]/20 bg-[#5eead4]/10 px-3 py-0.5 text-xs text-[#5eead4] mb-3 font-semibold font-mono">
+            PAY-AS-YOU-GO IN RUPIAH
+          </div>
+          <h4 className="text-xl sm:text-2xl font-semibold text-white mb-3">
+            Sistem Deposit Prabayar Fleksibel Tanpa Komitmen
+          </h4>
+          <p className="text-sm text-[#9eb3ad] max-w-2xl mx-auto leading-relaxed">
+            Tidak ada biaya langganan bulanan yang hangus sia-sia. Cukup top-up saldo mulai dari <strong className="text-[#5eead4]">Rp 10.000 via QRIS</strong>, saldo tidak pernah kedaluwarsa dan hanya terpotong saat API Key Anda melakukan request secara riil.
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-4">
+            <button
+              onClick={() => router.push("/login?tab=register")}
+              className="px-7 py-2.5 rounded-full bg-[#5eead4] hover:bg-[#78f7e2] text-[#041814] font-semibold text-sm shadow-[0_4px_25px_rgba(94,234,212,0.35)] transition-all cursor-pointer"
+            >
+              Buka Akun & Top Up Sekarang
+            </button>
+          </div>
         </div>
       </div>
     </section>

@@ -8,64 +8,95 @@ export default function Navigation() {
   const router = useRouter();
 
   return (
-    <nav className="fixed top-0 z-50 w-full bg-[#08090a]/80 backdrop-blur-md border-b border-white/[0.06]">
-      <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+    <header className="fixed top-0 z-50 w-full bg-[#041410]/80 backdrop-blur-md border-b border-white/[0.07]">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Brand */}
-        <button
-          type="button"
-          className="flex items-center gap-2.5 cursor-pointer bg-transparent border-none p-0 group"
-          onClick={() => router.push("/")}
-        >
-          <LogoIcon className="h-6 w-6 text-white group-hover:opacity-80 transition-opacity" />
-          <div className="flex items-center gap-2">
-            <span className="text-[#f7f8f8] text-sm font-semibold tracking-tight">PALU</span>
-            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/[0.06] text-[#8a8f98] border border-white/[0.08]">
-              ROUTER
-            </span>
-          </div>
-        </button>
+        <div className="flex items-center gap-8">
+          <button
+            type="button"
+            className="flex items-center gap-3 cursor-pointer bg-transparent border-none p-0 group"
+            onClick={() => router.push("/")}
+          >
+            <div className="h-9 w-9 rounded-full bg-[#5eead4]/10 border border-[#5eead4]/30 flex items-center justify-center shadow-[0_0_15px_rgba(94,234,212,0.25)] group-hover:scale-105 transition-transform">
+              <LogoIcon className="h-5 w-5 text-[#5eead4]" />
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-white text-sm font-bold tracking-tight">PALU</span>
+              <span className="text-[10px] font-mono tracking-wider px-2 py-0.5 rounded-full bg-[#5eead4]/10 text-[#5eead4] border border-[#5eead4]/20 font-semibold">
+                ROUTER
+              </span>
+            </div>
+          </button>
 
-        {/* Links */}
-        <div className="hidden md:flex items-center gap-6 text-[13px] font-medium text-[#8a8f98]">
-          <a className="hover:text-[#f7f8f8] transition-colors" href="#models">Models & Pricing</a>
-          <a className="hover:text-[#f7f8f8] transition-colors" href="#code">Integration</a>
-          <a className="hover:text-[#f7f8f8] transition-colors" href="#architecture">Architecture</a>
-          <a className="hover:text-[#f7f8f8] transition-colors" href="/AGENT.md" target="_blank">AGENT.md</a>
+          {/* Desktop Nav Links */}
+          <nav className="hidden md:flex items-center gap-6 text-[13px] font-medium text-[#9eb3ad]">
+            <a className="hover:text-white transition-colors" href="#models">Models & Pricing</a>
+            <a className="hover:text-white transition-colors" href="#how-it-works">How It Works</a>
+            <a className="hover:text-white transition-colors" href="#capabilities">Capabilities</a>
+            <a className="hover:text-white transition-colors" href="#developer">Developers</a>
+            <a className="hover:text-white transition-colors" href="/AGENT.md" target="_blank">AGENT.md</a>
+          </nav>
         </div>
 
-        {/* Action */}
+        {/* Action Controls */}
         <div className="flex items-center gap-3">
+          {/* Search / Explore Trigger */}
+          <button 
+            type="button"
+            onClick={() => router.push("/#models")}
+            aria-label="Search models"
+            className="hidden sm:inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-[#9eb3ad] hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
+
+          {/* Sign In Pill */}
           <button 
             onClick={() => router.push("/login")}
-            className="text-[13px] font-medium text-[#8a8f98] hover:text-[#f7f8f8] px-2.5 py-1 transition-colors cursor-pointer"
+            className="inline-flex items-center justify-center h-9 px-4 rounded-full border border-white/10 bg-white/5 text-[13px] font-medium text-white hover:bg-white/10 transition-colors cursor-pointer"
           >
             Sign in
           </button>
+
+          {/* Primary Mint Green Early Access Pill */}
           <button 
             onClick={() => router.push("/login?tab=register")}
-            className="h-8 px-3 rounded-md bg-[#5e6ad2] hover:bg-[#7170ff] transition-all text-white text-[13px] font-medium shadow-[0_1px_2px_rgba(0,0,0,0.4)] flex items-center gap-1.5 cursor-pointer"
+            className="inline-flex items-center justify-center h-9 px-4 gap-2 rounded-full bg-[#5eead4] hover:bg-[#78f7e2] text-[#041814] text-[13px] font-semibold transition-all shadow-[0_0_20px_rgba(94,234,212,0.35)] cursor-pointer"
           >
-            <span>Get API Key</span>
-            <span className="text-white/70">→</span>
+            <span>Early Access</span>
+            <span className="text-xs">→</span>
           </button>
+
+          {/* Mobile hamburger */}
           <button 
-            className="md:hidden text-[#8a8f98] hover:text-white cursor-pointer ml-1"
+            className="md:hidden text-[#9eb3ad] hover:text-white cursor-pointer ml-1"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            <span className="material-symbols-outlined text-[20px]">{mobileMenuOpen ? "close" : "menu"}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              {mobileMenuOpen ? (
+                <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
+              ) : (
+                <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" strokeLinejoin="round" />
+              )}
+            </svg>
           </button>
         </div>
       </div>
 
+      {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-white/[0.06] bg-[#08090a] px-6 py-4 space-y-3 text-[13px]">
-          <a className="block text-[#8a8f98] hover:text-white py-1" href="#models" onClick={() => setMobileMenuOpen(false)}>Models & Pricing</a>
-          <a className="block text-[#8a8f98] hover:text-white py-1" href="#code" onClick={() => setMobileMenuOpen(false)}>Integration</a>
-          <a className="block text-[#8a8f98] hover:text-white py-1" href="#architecture" onClick={() => setMobileMenuOpen(false)}>Architecture</a>
-          <a className="block text-[#8a8f98] hover:text-white py-1" href="/AGENT.md" target="_blank">AGENT.md</a>
+        <div className="md:hidden border-b border-white/[0.08] bg-[#041410] px-6 py-4 space-y-3 text-[13px]">
+          <a className="block text-[#9eb3ad] hover:text-white py-1" href="#models" onClick={() => setMobileMenuOpen(false)}>Models & Pricing</a>
+          <a className="block text-[#9eb3ad] hover:text-white py-1" href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>How It Works</a>
+          <a className="block text-[#9eb3ad] hover:text-white py-1" href="#capabilities" onClick={() => setMobileMenuOpen(false)}>Capabilities</a>
+          <a className="block text-[#9eb3ad] hover:text-white py-1" href="#developer" onClick={() => setMobileMenuOpen(false)}>Developers</a>
+          <a className="block text-[#9eb3ad] hover:text-white py-1" href="/AGENT.md" target="_blank">AGENT.md</a>
         </div>
       )}
-    </nav>
+    </header>
   );
 }
 
